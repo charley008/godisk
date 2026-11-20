@@ -13,7 +13,7 @@ try {
     $env:GOARCH = 'amd64'
     $env:CGO_ENABLED = '0'
     $manifest = Get-Content -Raw -LiteralPath 'mygo.json' | ConvertFrom-Json
-    $output = Join-Path (Get-Location).Path "build/preview-$($manifest.version)"
+    $output = Join-Path (Get-Location).Path "build/release-$($manifest.version)"
     $env:MYGO_LDFLAGS = "$originalLDFlags -X goDisk/internal/benchmark.engineHash=$engineHash".Trim()
     go tool mygo build -platform windows/amd64 -skip-installer -o $output
     if ($LASTEXITCODE -ne 0) { throw "MyGo build failed ($LASTEXITCODE)" }
@@ -46,7 +46,7 @@ try {
         Add-Content -LiteralPath $noticeFile -Encoding utf8
     Copy-Item -LiteralPath 'docs/PREVIEW.md' -Destination (Join-Path $build 'README.md')
     New-Item -ItemType Directory -Path 'dist' -Force | Out-Null
-    $archive = Join-Path (Resolve-Path 'dist').Path "goDisk-$($manifest.version)-windows-x64-preview.zip"
+    $archive = Join-Path (Resolve-Path 'dist').Path "goDisk-$($manifest.version)-windows-x64.zip"
     $paths = @('goDisk.exe', 'icon.png', 'README.md', 'THIRD_PARTY_NOTICES.txt', 'diskspd') |
         ForEach-Object { Join-Path $build $_ }
     Compress-Archive -LiteralPath $paths -DestinationPath $archive -Force

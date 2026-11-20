@@ -56,7 +56,7 @@ jobs:
         run: |
           ./scripts/package.ps1 -DiskSpdDirectory ./build/diskspd
           $version = $env:GITHUB_REF_NAME.Substring(1)
-          $name = "goDisk-$version-windows-x64-preview.zip"
+          $name = "goDisk-$version-windows-x64.zip"
           $archive = "dist/$name"
           $checksum = "$archive.sha256"
           $digest = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
