@@ -282,3 +282,7 @@ SQLite 回归测试验证旧测速记录不会被较新的健康记录挤出。�
 ### 结果与下一步
 
 用 v0.3.2 作为首次 GitHub Actions 发布标签，远程运行负责验证与构建。
+
+## [2026-11-20 16:13]
+
+按反馈将 GitHub 上已发布的 v0.3.2 标记为 Latest，现有标签与构建文件沿用首次 Actions 发布产物。更新 `.github/workflows/release.yml` 和 `README.md`，后续版本标签发布后设置 Latest，并使用固定的 Latest 下载入口。GitHub API 已验证 v0.3.2 指向最新版本。
