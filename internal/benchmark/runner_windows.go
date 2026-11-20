@@ -24,9 +24,10 @@ import (
 	win "golang.org/x/sys/windows"
 )
 
-const engineHash = "dd4e57e1e8ccaf5d6437938f8aab7f17e9a1e6d8fba8a093006b7cadf16faea2"
+// Release builds set this to the SHA-256 of the DiskSpd built with the package.
+var engineHash = "dd4e57e1e8ccaf5d6437938f8aab7f17e9a1e6d8fba8a093006b7cadf16faea2"
 
-const engineSetupHint = "请在 goDisk 目录运行 setup-diskspd.ps1 安装 Microsoft DiskSpd 2.3"
+const engineSetupHint = "请重新解压完整的 goDisk 压缩包，保留 diskspd 文件夹"
 
 type profile struct {
 	domain.Workload

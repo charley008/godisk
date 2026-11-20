@@ -286,3 +286,24 @@ SQLite 回归测试验证旧测速记录不会被较新的健康记录挤出。�
 ## [2026-11-20 16:13]
 
 按反馈将 GitHub 上已发布的 v0.3.2 标记为 Latest，现有标签与构建文件沿用首次 Actions 发布产物。更新 `.github/workflows/release.yml` 和 `README.md`，后续版本标签发布后设置 Latest，并使用固定的 Latest 下载入口。GitHub API 已验证 v0.3.2 指向最新版本。
+
+## [2026-11-20 16:18]
+
+### 目标
+
+公开 ZIP 解压后即可运行 goDisk 和测速。
+
+### 发现与操作
+
+微软官方预编译 ZIP 的 EULA 约束其分发。改由 GitHub Actions 从 MIT 许可的 DiskSpd v2.3 固定源码提交编译 x64 静态 C++ 运行库构建，并把实际引擎哈希写入 goDisk。随包提供引擎和合并后的第三方许可文本。
+
+### 修改文件
+
+- `.github/workflows/release.yml` 获取固定源码并验证解压后的测速。
+- `scripts/build-diskspd.ps1` 和 `scripts/package.ps1` 构建、打包引擎及许可。
+- `internal/benchmark/runner_windows.go` 继续对包内引擎执行哈希校验。
+- `mygo.json`、`README.md` 和 `docs/PREVIEW.md` 更新版本及使用说明。
+
+### 结果与下一步
+
+由 v0.3.3 标签验证云端源构建、便携包和实盘读取、取消、清理。
