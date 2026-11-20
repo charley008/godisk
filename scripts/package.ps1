@@ -47,7 +47,7 @@ try {
     Copy-Item -LiteralPath 'docs/PREVIEW.md' -Destination (Join-Path $build 'README.md')
     New-Item -ItemType Directory -Path 'dist' -Force | Out-Null
     $archive = Join-Path (Resolve-Path 'dist').Path "goDisk-$($manifest.version)-windows-x64.zip"
-    $paths = @('goDisk.exe', 'icon.png', 'README.md', 'THIRD_PARTY_NOTICES.txt', 'diskspd') |
+    $paths = @('goDisk.exe', 'README.md', 'THIRD_PARTY_NOTICES.txt', 'diskspd') |
         ForEach-Object { Join-Path $build $_ }
     Compress-Archive -LiteralPath $paths -DestinationPath $archive -Force
     Get-FileHash -LiteralPath $archive -Algorithm SHA256

@@ -74,6 +74,9 @@ jobs:
               throw "Required package file missing: $file"
             }
           }
+          if (Test-Path -LiteralPath (Join-Path $unpacked 'icon.png')) {
+            throw 'The app icon must be embedded in goDisk.exe.'
+          }
           $env:GODISK_SMOKE_DISKSPD = Join-Path $unpacked 'diskspd/diskspd.exe'
           $env:GODISK_SMOKE_VOLUME = "$env:SystemDrive\"
           $engineHash = (Get-FileHash -LiteralPath $env:GODISK_SMOKE_DISKSPD).Hash.ToLowerInvariant()

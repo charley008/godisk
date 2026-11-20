@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/egoist/mygo"
 	"goDisk/internal/application"
@@ -20,13 +19,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	mygo.App.WhenReady(func() {
-		window := desktop.Open(ctx, application.App{Store: store}, storeErr)
-		dir, err := mygo.App.Path(mygo.PathResources)
-		if err == nil {
-			if image, err := os.ReadFile(filepath.Join(dir, "icon.png")); err == nil {
-				_ = window.SetIcon(image)
-			}
-		}
+		desktop.Open(ctx, application.App{Store: store}, storeErr)
 	})
 	if err := mygo.App.Run(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

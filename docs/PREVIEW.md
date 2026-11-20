@@ -1,4 +1,4 @@
-# goDisk 0.3.4 测试版
+# goDisk 0.3.5
 
 goDisk — Disk Health & Performance Monitor
 Windows 11 x64 磁盘健康检测与性能测试工具
