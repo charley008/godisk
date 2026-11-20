@@ -8,11 +8,12 @@ Windows 磁盘健康检测与性能测试工具。支持查看 SMART 和设备�
 
 ## 发布
 
-更新 `mygo.json` 的版本号并提交，在对应提交上创建并推送同版本的标签。例如版本 `0.3.3` 对应标签 `v0.3.3`。
+更新 `mygo.json` 的版本号并提交，在对应提交上创建并推送同版本的标签。
 
 ```powershell
-git tag -a v0.3.3 -m "goDisk v0.3.3"
-git push origin v0.3.3
+$version = (Get-Content mygo.json -Raw | ConvertFrom-Json).version
+git tag -a "v$version" -m "goDisk v$version"
+git push origin "v$version"
 ```
 
 GitHub Actions 在版本标签推送后运行测试，构建 Windows x64 便携 ZIP，并在 Releases 发布 ZIP 和 SHA-256 校验文件，同时将该版本标为 Latest。普通分支推送不触发发布构建。

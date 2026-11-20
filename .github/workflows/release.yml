@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   windows-x64:
-    runs-on: windows-2025
+    runs-on: windows-2025-vs2026
     timeout-minutes: 20
     env:
       GOTOOLCHAIN: local
@@ -31,16 +31,6 @@ jobs:
             throw "Tag '$env:GITHUB_REF_NAME' must match mygo.json version '$($manifest.version)'."
           }
 
-      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
-        with:
-          go-version-file: go.mod
-
-      - name: Test and vet
-        run: |
-          go test ./...
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          go vet ./...
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: microsoft/diskspd
@@ -50,6 +40,16 @@ jobs:
 
       - name: Build DiskSpd from source
         run: ./scripts/build-diskspd.ps1 -Source ./build/diskspd-source -Destination ./build/diskspd
+
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: go.mod
+
+      - name: Test and vet
+        run: |
+          go test ./...
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          go vet ./...
 
       - name: Build Windows portable ZIP
         id: package

@@ -12,7 +12,7 @@ if ($LASTEXITCODE -ne 0 -or $commit -cne $expectedCommit) {
 }
 
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
-$msbuild = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+$msbuild = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 Microsoft.VisualStudio.Component.VC.ATL `
     -find 'MSBuild\Current\Bin\amd64\MSBuild.exe' | Select-Object -First 1
 if (-not $msbuild) { throw 'Visual Studio C++ build tools are required to build DiskSpd.' }
 
@@ -32,7 +32,7 @@ $runtime.InnerText = 'MultiThreaded'
 $releaseCompile.AppendChild($runtime) | Out-Null
 try {
     $props.Save($propsPath)
-    & $msbuild (Join-Path $projects 'diskspd.sln') /m /t:CmdRequestCreator /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /verbosity:minimal
+    & $msbuild (Join-Path $projects 'diskspd.sln') /m /t:CmdRequestCreator /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
     if ($LASTEXITCODE -ne 0) { throw "DiskSpd build failed ($LASTEXITCODE)." }
 } finally {
     [IO.File]::WriteAllBytes($propsPath, $originalProps)
