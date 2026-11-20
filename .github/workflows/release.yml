@@ -1,0 +1,71 @@
+name: Build Windows release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  windows-x64:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    env:
+      GOTOOLCHAIN: local
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify release version
+        run: |
+          $manifest = Get-Content -Raw mygo.json | ConvertFrom-Json
+          if ($env:GITHUB_REF_NAME -cnotmatch '^v[0-9]+\.[0-9]+\.[0-9]+$' -or
+              $env:GITHUB_REF_NAME -cne "v$($manifest.version)") {
+            throw "Tag '$env:GITHUB_REF_NAME' must match mygo.json version '$($manifest.version)'."
+          }
+
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: go.mod
+
+      - name: Test and vet
+        run: |
+          go test ./...
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          go vet ./...
+
+      - name: Build Windows portable ZIP
+        id: package
+        run: |
+          ./scripts/package.ps1
+          $version = $env:GITHUB_REF_NAME.Substring(1)
+          $name = "goDisk-$version-windows-x64-preview.zip"
+          $archive = "dist/$name"
+          $checksum = "$archive.sha256"
+          $digest = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$digest  $name" | Set-Content -LiteralPath $checksum -Encoding ascii
+          "archive=$archive", "checksum=$checksum" >> $env:GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: goDisk-${{ github.ref_name }}-windows-x64
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.checksum }}
+          if-no-files-found: error
+
+      - name: Publish GitHub preview release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ARCHIVE: ${{ steps.package.outputs.archive }}
+          RELEASE_CHECKSUM: ${{ steps.package.outputs.checksum }}
+        run: |
+          gh release create $env:GITHUB_REF_NAME $env:RELEASE_ARCHIVE $env:RELEASE_CHECKSUM `
+            --repo $env:GITHUB_REPOSITORY --verify-tag --generate-notes --prerelease --title "goDisk $env:GITHUB_REF_NAME"

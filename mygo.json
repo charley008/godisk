@@ -1,0 +1,7 @@
+{
+  "name": "goDisk",
+  "identifier": "local.godisk",
+  "version": "0.3.2",
+  "main": "./cmd/goDisk",
+  "out": "build"
+}
